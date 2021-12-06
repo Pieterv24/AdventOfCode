@@ -1,20 +1,18 @@
 const fs = require('fs');
 const readline = require('readline');
 
-const boardSize = 5;
-
 function checkForWinningBoard(rows) {
     for (const row of rows) {
         if (row.reduce((pv, cv) => pv && (cv === 'X'), true)) {
-            console.log('win found')
-            console.log(row);
             return true;
         }
     }
 }
 
 function checkForWinningBoards(boards) {
-    for (const board of boards) {
+    const winningBoards = [];
+    for (const boardIndex in boards) {
+        const board = boards[boardIndex];
         const checkCount = board.reduce((pv, cv) => pv + cv.reduce((pv2, cv2) => cv2 === 'X' ? pv2 + 1 : pv2, 0), 0);
         // Sanity check, this board can't have bingo
         if (checkCount < 5) {
@@ -26,9 +24,15 @@ function checkForWinningBoards(boards) {
 
         // Find winning row/col
         if (checkForWinningBoard(board) || checkForWinningBoard(rotatedBoard)) {
-            return board;
+            winningBoards.push({board, index: boardIndex});
         }
     }
+
+    if (winningBoards.length > 1) {
+        // Sort so removal doesn't fuck stuff up
+        return winningBoards.sort((a, b) => b.index - a.index);
+    }
+    return winningBoards;
 }
 
 async function processLineByLine() {
@@ -61,6 +65,8 @@ async function processLineByLine() {
         gameObject.boards.push(boardBuffer);
     }
 
+    let winCounter = 0;
+    const gameBoards = gameObject.boards.length;
     // Play for each number
     for (const number of gameObject.numbers) {
         const playedBoards = gameObject.boards.map(board => {
@@ -70,14 +76,21 @@ async function processLineByLine() {
         });
         gameObject.boards = playedBoards;
         
-        const winningBoard = checkForWinningBoards(playedBoards);
-        if (winningBoard) {
-            console.log(`We've found a winner with number: ${number}`)
-            console.log(winningBoard);
-            const boardSum = winningBoard.reduce((pr, cr) => pr + cr.reduce((pv, cv) => cv !== 'X' ? pv + cv : pv, 0)  ,0);
+        const winningBoards = checkForWinningBoards(playedBoards);
+        if (winningBoards.length > 0) {
+            winCounter += winningBoards.length;
 
-            console.log(`The solution is: ${boardSum} * ${number} = ${boardSum * number}`)
-            break;
+            // Remove all winning boards
+            winningBoards.map(winningBoard => gameObject.boards.splice(winningBoard.index, 1));
+
+            if (winCounter === gameBoards) {
+                console.log(`We've found the last winner with number: ${number}`)
+                console.log(winningBoards[0]);
+                const boardSum = winningBoards[0].board.reduce((pr, cr) => pr + cr.reduce((pv, cv) => cv !== 'X' ? pv + cv : pv, 0)  ,0);
+    
+                console.log(`The solution is: ${boardSum} * ${number} = ${boardSum * number}`)
+                break;
+            }
         }
     }
 }

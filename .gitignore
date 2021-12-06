@@ -1,3 +1,2 @@
-input.txt
-output.txt
-debug.txt
+output.*
+debug.*
