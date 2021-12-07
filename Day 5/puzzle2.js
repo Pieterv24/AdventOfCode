@@ -1,17 +1,11 @@
 const fs = require('fs');
 const readline = require('readline');
 
-const gridSize = 10;
+const gridSize = 1000;
 
 function calcLinePoints(x1,y1,x2,y2) {
     console.log(`[${x1},${y1}], [${x2},${y2}]`);
     const linePoints = [];
-
-    if (x1 !== x2 && y1 !== y2) {
-        console.log('diagnals can be ignores');
-        console.log('----------------------------')
-        return linePoints;
-    }
 
     const delta_x = x2 - x1;
     const delta_y = y2 - y1;
@@ -38,7 +32,7 @@ function calcLinePoints(x1,y1,x2,y2) {
 }
 
 async function processLineByLine() {
-    const fileStream = fs.createReadStream('sampleInput.txt');
+    const fileStream = fs.createReadStream('input.txt');
 
     const rl = readline.createInterface({
         input: fileStream,
