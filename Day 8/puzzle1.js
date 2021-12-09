@@ -1,28 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 
-const inputFile = 'sampleInput.txt';
-
-/**
- * 6 segments: 0, 6, 9 (differentiating segments: )
- * 2 segments: 1
- * 5 segments: 2, 3, 5 (differentiating segments: )
- * 4 segments: 4
- * 3 segments: 7
- * 7 segments: 8
- */
-const segments = {
-    0: ['a', 'b', 'c', 'e', 'f', 'g'],
-    1: ['c', 'f'],
-    2: ['a', 'c', 'd', 'e', 'g'],
-    3: ['a', 'c', 'd', 'f', 'g'],
-    4: ['b', 'c', 'd', 'f'],
-    5: ['a', 'b', 'd', 'f', 'g'],
-    6: ['a', 'b', 'd', 'e', 'f', 'g'],
-    7: ['a', 'c', 'f'],
-    8: ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
-    9: ['a', 'b', 'c', 'd', 'f', 'g']
-}
+const inputFile = 'input.txt';
 
 async function processLineByLine() {
     const fileStream = fs.createReadStream(inputFile);
@@ -32,9 +11,18 @@ async function processLineByLine() {
         crlfDelay: Infinity
     });
 
+    let counter = 0;
+
     for await (const line of rl) {
-        
+        const digits = line.split('|')[1].trim().split(' ');
+
+        // Filter array to only contain the needed values
+        const filteredDigits = digits.filter(dg => dg.length === 2 || dg.length === 3 || dg.length === 4 || dg.length === 7);
+
+        counter += filteredDigits.length;
     }
+
+    console.log(counter);
 }
 
 processLineByLine();
