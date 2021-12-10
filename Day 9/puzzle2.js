@@ -12,7 +12,9 @@ function findHigherPoints(heightMap, location) {
     const higherPoints = [];
     const adjacentCoords = [[x, y+1], [x, y-1], [x-1, y], [x+1, y]].filter(coord => coord[0] >= 0 && coord[1] >= 0 && coord[0] < heightMap[y].length && coord[1] < heightMap.length);
 
-    adjacentCoords.filter(value => heightMap[value[1]][value[0]] !== 9 && heightMap[value[1]][value[0]] === (currentValue + 1)).map(value => higherPoints.push(value));
+    adjacentCoords.filter(value => 
+        heightMap[value[1]][value[0]] !== 9 && heightMap[value[1]][value[0]] > currentValue)
+        .map(value => higherPoints.push(value));
 
     if (higherPoints.length > 0) {
         return [location, ...higherPoints, ...higherPoints.flatMap(point => findHigherPoints(heightMap, point))];
@@ -60,8 +62,7 @@ async function processLineByLine() {
 
     // After gettign the low points, get the basins
     const basins = lowPoints.map(point => findBasin(heightMap,  point));
-    console.log(JSON.stringify(basins.sort((a, b) => b.length - a.length).map(e => e.map(coord => heightMap[coord[1]][coord[0]]))));
-    // console.log(basins.sort((a, b) => b.length - a.length).slice(0, 3).reduce((pv, cv) => pv * cv.length, 1));
+    console.log(basins.sort((a, b) => b.length - a.length).slice(0, 3).reduce((pv, cv) => pv * cv.length, 1));
 }
 
 processLineByLine();
