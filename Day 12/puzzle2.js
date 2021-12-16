@@ -11,8 +11,15 @@ function traverseCaves(caves, route = ['start']) {
         return route.join(',');
     }
 
+    // Check if a small detour has been on the route already, if not, detour is allowed
+    const smallCaveDetourAllowed = route.filter((cave, index) => 
+        route.indexOf(cave) !== index && cave === cave.toLowerCase()).length === 0;
+
+    // Filter on possible routes, small caves can only be visited once, unless detour is allowed, detour is not allowed to start or end
     const possibleRoutes = caves[currentCave].connections
-        .filter(cave => !(cave === cave.toLowerCase() && route.includes(cave)));
+        .filter(cave => (
+            !(cave === cave.toLowerCase() && route.includes(cave)) 
+            || (smallCaveDetourAllowed && cave !== 'end' && cave !== 'start')));
 
     return possibleRoutes.flatMap(cave => traverseCaves(caves, [...route, cave]));
 }
