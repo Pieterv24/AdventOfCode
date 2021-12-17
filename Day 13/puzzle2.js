@@ -107,10 +107,12 @@ async function processLineByLine() {
 
     console.log(paper.toString());
     console.log(`The paper has a size of ${paper.xGridSize}, ${paper.yGridSize}`);
-    console.log(`Folding along ${foldInstructions[0][0]} axis`);
+    for (const instruction of foldInstructions) {
+        console.log(`Folding along ${instruction[0]} axis`);
 
-    paper.foldGrid(foldInstructions[0][0], parseInt(foldInstructions[0][1]));
-    console.log(paper.toString());
+        paper.foldGrid(instruction[0], parseInt(instruction[1]));
+        console.log(paper.toString());
+    }
 
     console.log(`After folding, ${paper.countDots()} dots are visible`);
 }
