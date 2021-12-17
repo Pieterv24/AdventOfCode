@@ -13,9 +13,13 @@ async function processLineByLine() {
         crlfDelay: Infinity
     });
 
+    const grid = [];
+
     for await (const line of rl) {
-        
+        grid.push(line.split('').map(e => parseInt(e)));
     }
+
+    console.log(grid);
 }
 
 processLineByLine();
