@@ -13,7 +13,7 @@
             "justMyCode": true,
             "cwd": "${fileDirname}",
             "args": [
-                "exampleInputBig.txt"
+                "exampleInput.txt"
             ]
         },
         {
