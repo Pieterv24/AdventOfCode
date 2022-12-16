@@ -2,7 +2,8 @@ import sys
 from os import path
 import functools
 
-valves = dict()
+tunnels = dict()
+rates = dict()
 
 def readValves(filePath):
     for line in open(filePath).readlines():
@@ -14,27 +15,42 @@ def readValves(filePath):
 
         valveAvailablePaths = pathInfo.replace("valves", "valve").split("valve ")[1].split(", ")
         
-        valves[valveName] = (valveFlowRate, valveAvailablePaths)
+        tunnels[valveName] = valveAvailablePaths
+        # We don't need any values that don't have any flowrate
+        if valveFlowRate > 0:
+            rates[valveName] = valveFlowRate
 
-@functools.lru_cache(maxsize=None)
-def getHighestPressureRelease(currentValve, minutesLeft, openedValves):
-    if minutesLeft <= 0:
+#Cache this function to speed up operation
+@functools.cache
+def getDistance(cur, target, visited=set()):
+    if cur == target:
         return 0
+    if target in visited:
+        return float("inf")
+    visited.add(target)
+    shortest = min(getDistance(cur, path) for path in tunnels[target])
+    visited.remove(target)
+    return shortest + 1
 
-    best = 0
-    if currentValve not in openedValves:
-        flow, adjecents = valves[currentValve]
-        releasedValue = (minutesLeft - 1) * flow
-        current_opened = tuple(sorted(openedValves + (currentValve,)))
+def total(current, time, valves):
+    result = 0
+    for valve in valves:
+        new_time = time - getDistance(current, valve) - 1
+        if new_time <= 0:
+            continue
+        new_nodes = tuple(n for n in valves if n != valve)
+        result = max(result, new_time * rates[valve] + total(valve, new_time, new_nodes))
+    return result
 
-        for adjecent in adjecents:
-            if releasedValue != 0:
-                best = max(best, releasedValue + getHighestPressureRelease(adjecent, minutesLeft - 2, current_opened))
-            best = max(best, getHighestPressureRelease(adjecent, minutesLeft - 1, openedValves))
-    
-    return best
-    
-    
+def findMaxPressureRelease():
+    result = 0
+    # Create partitions to loop through every combination of opened valves by both me & elepahant
+    for partition in range(1 << (len(rates) - 1)):
+        print(f"Partition: {partition}, current result: {result}")
+        me = tuple(valve for i, valve in enumerate(rates) if partition & (1 << i))
+        elephant = tuple(valve for i, valve in enumerate(rates) if not partition & (1 << i))
+        result = max(result, total("AA", 26, me) + total("AA", 26, elephant))
+    return result
 
 
 if __name__ == "__main__":
@@ -45,5 +61,5 @@ if __name__ == "__main__":
         filePath = sys.argv[1]
         print(f"Processing {filePath}...")
         readValves(filePath)
-        result = getHighestPressureRelease("AA", 30, ())
+        result = findMaxPressureRelease()
         print(result)
