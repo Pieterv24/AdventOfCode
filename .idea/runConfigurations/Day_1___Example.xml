@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Day 1 - Example" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="dev.pieterv24.MainKt" />
+    <module name="AdventOfCode" />
+    <option name="PROGRAM_PARAMETERS" value="-d 1 -i input/day1/example.txt -p 1" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
