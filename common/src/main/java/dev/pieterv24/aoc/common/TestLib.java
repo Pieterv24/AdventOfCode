@@ -1,9 +1,9 @@
 package dev.pieterv24.aoc.common;
 
-public class CommonLib {
+public class TestLib {
     private String name;
 
-    public CommonLib(String name) {
+    public TestLib(String name) {
         this.name = name;
     }
 

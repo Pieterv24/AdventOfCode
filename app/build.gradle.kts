@@ -8,10 +8,6 @@ plugins {
     id("buildlogic.java-application-conventions")
 }
 
-dependencies {
-    implementation(project(":common"))
-}
-
 application {
     // Define the main class for the application.
     mainClass = "dev.pieterv24.aoc.app.Main"
