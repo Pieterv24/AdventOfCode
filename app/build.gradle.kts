@@ -12,3 +12,7 @@ application {
     // Define the main class for the application.
     mainClass = "dev.pieterv24.aoc.app.Main"
 }
+
+dependencies {
+    implementation(project(":day01"))
+}

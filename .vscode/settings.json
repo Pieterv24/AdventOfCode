@@ -4,5 +4,6 @@
         "**/.gradle": true,
         "**/.kotlin": true,
         "**/gradlew*": true
-    }
+    },
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

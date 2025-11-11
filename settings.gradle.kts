@@ -7,4 +7,4 @@ plugins {
 }
 
 rootProject.name = "AdventOfCode"
-include("app", "common")
+include("app", "common", "day01")
